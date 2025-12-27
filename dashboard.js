@@ -178,3 +178,7 @@ function showToast(message) {
         }, 300);
     }, 3000);
 }
+// В dashboard.js обновляем функцию viewPetProfile
+function viewPetProfile(animalId) {
+    window.location.href = `pet-profile.html?id=${animalId}`;
+}

@@ -112,3 +112,97 @@ function updateUserGreeting() {
         phoneElement.innerHTML = `<i class="fas fa-phone"></i> ${user.phone}`;
     }
 }
+// Обновляем массив защищенных страниц в navigation.js
+const protectedPages = ['dashboard.html', 'add-pet.html', 'pet-profile.html', 'edit-pet.html'];
+
+// Добавляем функцию для проверки доступа к редактированию
+function checkEditAccess() {
+    if (window.location.pathname.includes('edit-pet.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const animalId = urlParams.get('id');
+        
+        if (!animalId) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const animals = JSON.parse(localStorage.getItem('animalTrackerAnimals')) || [];
+        const animal = animals.find(a => a.id === animalId);
+        
+        // Проверяем, что питомец существует и принадлежит пользователю
+        if (!animal || animal.ownerId !== user?.id) {
+            showAccessError();
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 3000);
+        }
+    }
+}
+
+function showAccessError() {
+    // Показываем сообщение об ошибке доступа
+    const errorHTML = `
+        <div class="access-error">
+            <div class="access-error-content">
+                <i class="fas fa-lock"></i>
+                <h3>Доступ запрещен</h3>
+                <p>У вас нет прав для редактирования этого питомца</p>
+                <p>Перенаправление на главную страницу...</p>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', errorHTML);
+    
+    // Добавляем стили
+    const style = document.createElement('style');
+    style.textContent = `
+        .access-error {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-modal);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .access-error-content {
+            background: var(--gradient-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .access-error-content i {
+            font-size: 4rem;
+            color: var(--error);
+            margin-bottom: 20px;
+        }
+        
+        .access-error-content h3 {
+            color: var(--error);
+            margin-bottom: 15px;
+        }
+        
+        .access-error-content p {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Вызываем проверку при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    // ... существующий код ...
+    checkEditAccess();
+});

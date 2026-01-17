@@ -2387,3 +2387,724 @@ input[readonly]:focus {
         width: 100%;
     }
 }
+<!-- Навигация -->
+<nav class="navbar">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-paw"></i>
+            </div>
+            <span class="logo-text">ЧипТрекер</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html" class="active"><i class="fas fa-home"></i> Главная</a>
+            <a href="login.html"><i class="fas fa-sign-in-alt"></i> Вход</a>
+            <a href="register.html"><i class="fas fa-user-plus"></i> Регистрация</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Герой секция с животными -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1><span class="highlight">Учет домашних животных</span> по микрочипам</h1>
+            <p class="subtitle">Надежная система регистрации и отслеживания ваших питомцев</p>
+            <p class="description">ЧипТрекер помогает заботиться о ваших питомцах, храня всю важную информацию в одном месте. Регистрируйте, отслеживайте и управляйте данными о здоровье ваших животных.</p>
+            
+            <div class="hero-animals">
+                <div class="hero-animal">🐕</div>
+                <div class="hero-animal">🐈</div>
+                <div class="hero-animal">🐇</div>
+                <div class="hero-animal">🐦</div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="register.html" class="btn btn-primary btn-large btn-animal btn-paw">
+                    Начать регистрацию
+                </a>
+                <a href="login.html" class="btn btn-secondary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Войти в систему
+                </a>
+            </div>
+            
+            <div class="paw-progress">
+                <div class="paw-step active">1</div>
+                <div class="paw-step">2</div>
+                <div class="paw-step">3</div>
+                <div class="paw-step">4</div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://cdn-icons-png.flaticon.com/512/1998/1998678.png" alt="Домашние животные">
+        </div>
+    </div>
+</section>
+
+<!-- Декор в виде следов -->
+<div class="animal-decorations">
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+</div>
+/* ===== СТИЛИ ДЛЯ УСЛОВИЙ ИСПОЛЬЗОВАНИЯ ===== */
+.terms-header, .privacy-header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.terms-subtitle, .privacy-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.terms-emoji, .privacy-emoji {
+    font-size: 2rem;
+    margin-top: 20px;
+    opacity: 0.7;
+}
+
+.terms-content, .privacy-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.terms-section, .privacy-section {
+    background: var(--gradient-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 35px;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.terms-section:hover, .privacy-section:hover {
+    transform: translateY(-5px);
+    border-color: var(--lavender);
+    box-shadow: var(--shadow-md);
+}
+
+.terms-section h2, .privacy-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    color: var(--lavender);
+    font-size: 1.6rem;
+}
+
+.terms-section h2 i, .privacy-section h2 i {
+    color: var(--lavender);
+    background: rgba(157, 78, 221, 0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.terms-text, .privacy-text {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.terms-text h3, .privacy-text h3 {
+    color: var(--text-primary);
+    margin: 25px 0 15px;
+    font-size: 1.3rem;
+}
+
+.terms-text h4, .privacy-text h4 {
+    color: var(--text-primary);
+    margin: 20px 0 10px;
+    font-size: 1.1rem;
+}
+
+/* Списки */
+.terms-list, .privacy-list {
+    margin: 15px 0 20px 25px;
+    color: var(--text-secondary);
+}
+
+.terms-list li, .privacy-list li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 10px;
+}
+
+.terms-list li::before, .privacy-list li::before {
+    content: '•';
+    color: var(--lavender);
+    position: absolute;
+    left: -15px;
+}
+
+.privacy-list.numbered {
+    list-style-type: decimal;
+    margin-left: 30px;
+}
+
+.privacy-list.numbered li::before {
+    display: none;
+}
+
+/* Уведомления */
+.terms-note, .privacy-note {
+    background: rgba(157, 78, 221, 0.1);
+    border: 1px solid rgba(157, 78, 221, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.terms-note.success, .privacy-note.success {
+    background: rgba(74, 222, 128, 0.1);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+.terms-note.success i, .privacy-note.success i {
+    color: var(--success);
+}
+
+.terms-note i, .privacy-note i {
+    color: var(--lavender);
+    font-size: 1.3rem;
+    margin-top: 2px;
+}
+
+.terms-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.terms-warning i {
+    color: var(--warning);
+    font-size: 1.3rem;
+    margin-top: 2px;
+}
+
+/* Сетки */
+.requirements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.requirement-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.requirement-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lavender);
+}
+
+.security-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.security-feature {
+    background: rgba(157, 78, 221, 0.1);
+    border: 1px solid rgba(157, 78, 221, 0.2);
+    border-radius: 10px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.security-feature i {
+    color: var(--lavender);
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.contact-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.contact-item i {
+    color: var(--lavender);
+    font-size: 1.5rem;
+}
+
+.contact-item small {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Согласие */
+.terms-agreement, .privacy-acceptance {
+    background: linear-gradient(135deg, rgba(45, 27, 105, 0.8), rgba(26, 16, 51, 0.9));
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 40px;
+    margin: 40px 0;
+    text-align: center;
+}
+
+.terms-agreement {
+    background: linear-gradient(135deg, rgba(157, 78, 221, 0.1), rgba(74, 47, 173, 0.1));
+}
+
+.privacy-acceptance {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(157, 78, 221, 0.1));
+}
+
+.agreement-icon, .acceptance-icon {
+    font-size: 3.5rem;
+    color: var(--lavender);
+    margin-bottom: 20px;
+}
+
+.acceptance-icon {
+    color: var(--info);
+}
+
+.agreement-content h3, .acceptance-content h3 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.agreement-note, .acceptance-note {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 15px;
+    font-size: 1.1rem;
+}
+
+/* Кнопки действий */
+.terms-actions, .privacy-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+/* ===== СТИЛИ ДЛЯ ПОЛИТИКИ КОНФИДЕНЦИАЛЬНОСТИ ===== */
+.data-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.data-type {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.data-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.data-icon.personal {
+    background: rgba(157, 78, 221, 0.2);
+    color: var(--lavender);
+}
+
+.data-icon.account {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.data-info h4 {
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.data-info ul {
+    margin-left: 20px;
+    color: var(--text-secondary);
+}
+
+.animal-data-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.animal-data-category {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.animal-data-category h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: var(--lavender);
+}
+
+.animal-data-category i {
+    color: var(--lavender);
+}
+
+.usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.usage-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px;
+    transition: all 0.3s ease;
+}
+
+.usage-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--lavender);
+}
+
+.usage-item.primary {
+    background: rgba(157, 78, 221, 0.1);
+    border-color: rgba(157, 78, 221, 0.3);
+}
+
+.usage-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lavender);
+    margin-bottom: 15px;
+}
+
+.usage-item.primary .usage-icon {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.security-measure {
+    text-align: center;
+    padding: 20px;
+}
+
+.measure-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--lavender);
+    margin: 0 auto 15px;
+}
+
+.security-measure h4 {
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.security-measure p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.transfer-cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.transfer-case {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.transfer-case.emergency {
+    border-left: 4px solid var(--error);
+}
+
+.transfer-case.legal {
+    border-left: 4px solid var(--warning);
+}
+
+.transfer-case.service {
+    border-left: 4px solid var(--info);
+}
+
+.case-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.transfer-case.emergency .case-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--error);
+}
+
+.transfer-case.legal .case-icon {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+}
+
+.transfer-case.service .case-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--info);
+}
+
+.rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.right-item {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+}
+
+.right-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lavender);
+    margin: 0 auto 15px;
+}
+
+.storage-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.storage-period {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.period-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lavender);
+    flex-shrink: 0;
+}
+
+.cookies-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.cookie-type {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.cookie-type h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: var(--lavender);
+}
+
+.cookie-type.necessary h4 i { color: var(--success); }
+.cookie-type.functional h4 i { color: var(--info); }
+.cookie-type.analytics h4 i { color: var(--warning); }
+
+.contact-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.contact-method {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.method-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(157, 78, 221, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--lavender);
+    flex-shrink: 0;
+}
+
+.update-info {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 768px) {
+    .terms-section, .privacy-section {
+        padding: 25px;
+    }
+    
+    .terms-section h2, .privacy-section h2 {
+        font-size: 1.4rem;
+    }
+    
+    .terms-section h2 i, .privacy-section h2 i {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .terms-actions, .privacy-actions {
+        flex-direction: column;
+    }
+    
+    .terms-actions .btn, .privacy-actions .btn {
+        width: 100%;
+    }
+    
+    .requirements-grid,
+    .data-types,
+    .animal-data-grid,
+    .usage-grid,
+    .security-grid,
+    .transfer-cases,
+    .rights-grid,
+    .storage-info,
+    .cookies-types,
+    .contact-methods {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .terms-header, .privacy-header {
+        margin-bottom: 30px;
+    }
+    
+    .terms-agreement, .privacy-acceptance {
+        padding: 25px;
+    }
+    
+    .contact-item, .requirement-item, .transfer-case, .storage-period, .contact-method {
+        flex-direction: column;
+        text-align: center;
+    }
+}

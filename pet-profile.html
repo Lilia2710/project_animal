@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль питомца | Animal Chip Tracker</title>
+    <title>Профиль питомца | ЧипТрекер</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -11,20 +11,30 @@
 <body>
     <!-- Навигация -->
     <nav class="navbar">
-        <div class="container">
-            <a href="index.html" class="logo">
+    <div class="container">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
                 <i class="fas fa-paw"></i>
-                AnimalChipTracker
-            </a>
-            <div class="nav-links">
-                <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Личный кабинет</a>
-                <a href="add-pet.html"><i class="fas fa-plus-circle"></i> Добавить питомца</a>
-                <button class="btn-logout" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Выйти
-                </button>
             </div>
+            <span class="logo-text">ЧипТрекер</span>
+        </a>
+        <div class="nav-links">
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Личный кабинет</a>
+            <a href="add-pet.html"><i class="fas fa-plus-circle"></i> Добавить питомца</a>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Выйти
+            </button>
         </div>
-    </nav>
+    </div>
+</nav>
+
+<!-- Декор в виде следов животных -->
+<div class="animal-decorations">
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+    <div class="paw-print">🐾</div>
+</div>
 
     <!-- Профиль питомца -->
     <section class="section">
@@ -195,17 +205,17 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3><i class="fas fa-paw"></i> AnimalChipTracker</h3>
+                    <h3><i class="fas fa-paw"></i> ЧипТрекер</h3>
                     <p>Безопасный учет животных по микрочипам</p>
                 </div>
                 <div class="footer-section">
                     <h4>Контакты</h4>
-                    <p><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
-                    <p><i class="fas fa-envelope"></i> support@animalchiptracker.ru</p>
+                    <p><i class="fas fa-phone"></i> у нас нет телефона</p>
+                    <p><i class="fas fa-envelope"></i> не пишите нам</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 AnimalChipTracker. Все права защищены.</p>
+                <p>&copy; ничего не защищено. мы просто дети</p>
             </div>
         </div>
     </footer>

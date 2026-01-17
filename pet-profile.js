@@ -1,4 +1,4 @@
-// Функционал просмотра профиля питомца
+// pet-profile.js - ОБНОВЛЕННЫЙ ДЛЯ РАБОТЫ С API
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const animalId = urlParams.get('id');
@@ -26,27 +26,36 @@ async function loadAnimalProfile(animalId) {
             return;
         }
         
-        // В реальном приложении здесь будет запрос к серверу
-        const animals = JSON.parse(localStorage.getItem('animalTrackerAnimals')) || [];
-        const animal = animals.find(a => a.id === animalId && a.ownerId === user.id);
+        console.log(`🔄 Загрузка профиля питомца: ${animalId}`);
         
-        if (!animal) {
-            showError('Питомец не найден или у вас нет доступа');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
-            return;
+        // Используем API вместо localStorage
+        const response = await api.getAnimal(animalId);
+        
+        if (response.success && response.animal) {
+            const animal = response.animal;
+            
+            // Проверяем, что питомец принадлежит текущему пользователю
+            if (animal.ownerId !== user.id) {
+                throw new Error('У вас нет доступа к этому питомцу');
+            }
+            
+            populateProfile(animal);
+            
+        } else {
+            throw new Error(response.error || 'Питомец не найден');
         }
         
-        // Заполняем профиль данными
-        populateProfile(animal);
-        
     } catch (error) {
-        console.error('Ошибка загрузки профиля:', error);
-        showError('Произошла ошибка при загрузке профиля питомца');
+        console.error('❌ Ошибка загрузки профиля:', error);
+        showError(error.message || 'Не удалось загрузить профиль питомца');
+        
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 3000);
     }
 }
 
+// Функция populateProfile остается БЕЗ ИЗМЕНЕНИЙ (она уже работает правильно):
 function populateProfile(animal) {
     // Заголовок
     document.getElementById('petName').textContent = animal.petName;
@@ -83,43 +92,6 @@ function populateProfile(animal) {
         (animal.registrationDate ? formatDate(animal.registrationDate) : '—');
 }
 
-function populateTextContent(elementId, text) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    if (text && text.trim()) {
-        // Заменяем переносы строк на HTML
-        const formattedText = text.split('\n')
-            .map(line => `<p>${escapeHtml(line)}</p>`)
-            .join('');
-        element.innerHTML = formattedText;
-        element.classList.remove('no-data');
-    } else {
-        element.innerHTML = '<p class="no-data">Информация не указана</p>';
-        element.classList.add('no-data');
-    }
-}
-
-function calculateAge(birthDate) {
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let years = today.getFullYear() - birth.getFullYear();
-    let months = today.getMonth() - birth.getMonth();
-    
-    if (months < 0) {
-        years--;
-        months += 12;
-    }
-    
-    if (years === 0) {
-        return `${months} мес.`;
-    } else if (months === 0) {
-        return `${years} г.`;
-    } else {
-        return `${years} г. ${months} мес.`;
-    }
-}
-
 function setupProfileActions(animalId) {
     // Кнопка редактирования
     const editBtn = document.getElementById('editProfileBtn');
@@ -146,8 +118,47 @@ function setupProfileActions(animalId) {
     }
 }
 
+// Функция showDeleteConfirmation обновлена для работы с API:
+async function showDeleteConfirmation(animalId) {
+    try {
+        // Получаем информацию о питомце для сообщения
+        const response = await api.getAnimal(animalId);
+        
+        if (response.success && response.animal) {
+            const animal = response.animal;
+            
+            // Показываем модальное окно подтверждения
+            if (confirm(`Вы уверены, что хотите удалить питомца "${animal.petName}"?`)) {
+                await deleteAnimal(animalId);
+            }
+        }
+    } catch (error) {
+        console.error('❌ Ошибка подтверждения удаления:', error);
+        showError('Не удалось получить информацию о питомце');
+    }
+}
+
+// Функция deleteAnimal обновлена для работы с API:
+async function deleteAnimal(animalId) {
+    try {
+        console.log(`🗑️ Удаление питомца: ${animalId}`);
+        
+        const response = await api.deleteAnimal(animalId);
+        
+        if (response.success) {
+            showSuccessModal('Питомец успешно удален!', null, true);
+        } else {
+            throw new Error(response.error || 'Ошибка удаления');
+        }
+        
+    } catch (error) {
+        console.error('❌ Ошибка удаления:', error);
+        showError(error.message || 'Произошла ошибка при удалении питомца');
+    }
+}
+
+// Функция printProfile остается БЕЗ ИЗМЕНЕНИЙ:
 function printProfile() {
-    // Создаем стили для печати
     const printStyles = `
         <style>
             @media print {
@@ -177,36 +188,52 @@ function printProfile() {
         </style>
     `;
     
-    // Добавляем стили и печатаем
     document.head.insertAdjacentHTML('beforeend', printStyles);
     window.print();
     
-    // Удаляем стили после печати
     setTimeout(() => {
         const styles = document.querySelectorAll('style[media="print"]');
         styles.forEach(style => style.remove());
     }, 100);
 }
 
-function showDeleteConfirmation(animalId) {
-    // Получаем информацию о питомце для сообщения
-    const animals = JSON.parse(localStorage.getItem('animalTrackerAnimals')) || [];
-    const animal = animals.find(a => a.id === animalId);
+// Вспомогательные функции остаются БЕЗ ИЗМЕНЕНИЙ:
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
     
-    if (!animal) return;
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
     
-    // Используем ту же функцию, что и в edit-pet.js
-    if (typeof showDeleteConfirmation === 'function') {
-        showDeleteConfirmation(animalId, animal.petName);
+    if (years === 0) {
+        return `${months} мес.`;
+    } else if (months === 0) {
+        return `${years} г.`;
     } else {
-        // Альтернативная реализация
-        if (confirm(`Вы уверены, что хотите удалить питомца "${animal.petName}"?`)) {
-            deleteAnimal(animalId);
-        }
+        return `${years} г. ${months} мес.`;
     }
 }
 
-// Вспомогательные функции
+function populateTextContent(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    if (text && text.trim()) {
+        const formattedText = text.split('\n')
+            .map(line => `<p>${escapeHtml(line)}</p>`)
+            .join('');
+        element.innerHTML = formattedText;
+        element.classList.remove('no-data');
+    } else {
+        element.innerHTML = '<p class="no-data">Информация не указана</p>';
+        element.classList.add('no-data');
+    }
+}
+
 function formatDate(dateString) {
     if (!dateString) return '—';
     const date = new Date(dateString);
@@ -223,6 +250,41 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Добавляем недостающие функции для показа сообщений:
+function showSuccessModal(message, petName = null, redirect = false) {
+    const modal = document.getElementById('successModal');
+    if (!modal) {
+        // Просто показываем уведомление
+        alert(message);
+        if (redirect) {
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+        return;
+    }
+    
+    document.getElementById('successMessage').textContent = message;
+    modal.style.display = 'flex';
+    
+    if (redirect) {
+        setTimeout(() => {
+            modal.style.display = 'none';
+            window.location.href = 'dashboard.html';
+        }, 3000);
+    }
+}
+
 function showError(message) {
-    alert(message);
+    const modal = document.getElementById('errorModal');
+    if (modal) {
+        document.getElementById('errorMessage').innerHTML = message;
+        modal.style.display = 'flex';
+        
+        document.getElementById('errorOkBtn')?.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    } else {
+        alert(message);
+    }
 }

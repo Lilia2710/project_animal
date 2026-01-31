@@ -152,7 +152,7 @@ function updateStats(animals) {
     }
 }
 
-// 🎨 ОТОБРАЖЕНИЕ СЕТКИ ЖИВОТНЫХ
+// 🎨 ОТОБРАЖЕНИЕ СЕТКИ ЖИВОТНЫХ (ОТДЕЛЬНЫЕ СТИЛИ ДЛЯ ЛИЧНОГО КАБИНЕТА)
 function renderAnimalsGrid(animals) {
     const petsGrid = document.getElementById('petsGrid');
     if (!petsGrid) return;
@@ -174,74 +174,340 @@ function renderAnimalsGrid(animals) {
     }
     
     petsGrid.innerHTML = animals.map(animal => `
-        <div class="animal-card" data-id="${animal.id}">
-            <div class="animal-card-header">
-                <div class="animal-header-info">
-                    <h3 class="animal-name">${escapeHtml(animal.petName)}</h3>
-                    <div class="animal-badges">
-                        ${animal.vaccinations ? 
-                            '<span class="badge badge-success"><i class="fas fa-syringe"></i> Привит</span>' : ''}
-                        ${animal.chipNumber ? 
-                            '<span class="badge badge-info"><i class="fas fa-microchip"></i> Чипирован</span>' : ''}
+        <div class="dashboard-animal-card" data-id="${animal.id}">
+            <!-- Верхняя часть карточки -->
+            <div class="dashboard-card-header">
+                <div class="dashboard-card-title">
+                    <div class="dashboard-animal-avatar">
+                        ${getAnimalIcon(animal.species)}
+                    </div>
+                    <div class="dashboard-animal-info">
+                        <h3 class="dashboard-animal-name" title="${escapeHtml(animal.petName)}">
+                            ${escapeHtml(animal.petName)}
+                        </h3>
+                        <div class="dashboard-animal-meta">
+                            <span class="dashboard-chip-number">
+                                <i class="fas fa-microchip"></i> ${escapeHtml(animal.chipNumber || 'Без чипа')}
+                            </span>
+                            <span class="dashboard-animal-type">
+                                <i class="fas ${getSpeciesIcon(animal.species)}"></i> ${escapeHtml(animal.species)}
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <span class="chip-number">
-                    <i class="fas fa-microchip"></i> ${escapeHtml(animal.chipNumber || 'Без чипа')}
-                </span>
+                <div class="dashboard-animal-status">
+                    ${animal.vaccinations ? 
+                        '<span class="status-badge vaccinated"><i class="fas fa-syringe"></i> Привит</span>' : 
+                        '<span class="status-badge not-vaccinated"><i class="fas fa-exclamation-triangle"></i> Без прививок</span>'}
+                    ${animal.chipNumber ? 
+                        '<span class="status-badge chipped"><i class="fas fa-check-circle"></i> Чипирован</span>' : ''}
+                </div>
             </div>
             
-            <div class="animal-card-body">
-                <div class="animal-info">
-                    <div class="info-row">
-                        <span class="info-label">Вид:</span>
-                        <span class="info-value">${escapeHtml(animal.species)}</span>
-                    </div>
+            <!-- Основная информация -->
+            <div class="dashboard-card-body">
+                <div class="dashboard-info-grid">
                     ${animal.breed ? `
-                    <div class="info-row">
-                        <span class="info-label">Порода:</span>
-                        <span class="info-value">${escapeHtml(animal.breed)}</span>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-dna"></i> Порода
+                        </div>
+                        <div class="info-value" title="${escapeHtml(animal.breed)}">
+                            ${escapeHtml(animal.breed)}
+                        </div>
                     </div>` : ''}
+                    
                     ${animal.gender ? `
-                    <div class="info-row">
-                        <span class="info-label">Пол:</span>
-                        <span class="info-value">${escapeHtml(animal.gender)}</span>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-venus-mars"></i> Пол
+                        </div>
+                        <div class="info-value">
+                            ${escapeHtml(animal.gender)}
+                        </div>
                     </div>` : ''}
+                    
                     ${animal.birthDate ? `
-                    <div class="info-row">
-                        <span class="info-label">Дата рождения:</span>
-                        <span class="info-value">${formatDate(animal.birthDate)}</span>
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-birthday-cake"></i> Возраст
+                        </div>
+                        <div class="info-value">
+                            ${calculateAge(animal.birthDate)}
+                        </div>
                     </div>` : ''}
+                    
+                    ${animal.color ? `
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-palette"></i> Окрас
+                        </div>
+                        <div class="info-value" title="${escapeHtml(animal.color)}">
+                            ${escapeHtml(animal.color)}
+                        </div>
+                    </div>` : ''}
+                    
+                    ${animal.vaccinations ? `
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-syringe"></i> Прививки
+                        </div>
+                        <div class="info-value">
+                            ${getVaccineStatus(animal.vaccinations)}
+                        </div>
+                    </div>` : ''}
+                    
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-alt"></i> Дата регистрации
+                        </div>
+                        <div class="info-value">
+                            ${formatDate(animal.registrationDate)}
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="animal-actions">
-                    <button class="btn-view-pet" data-id="${animal.id}">
-                        <i class="fas fa-eye"></i> Просмотр
-                    </button>
-                    <a href="edit-pet.html?id=${animal.id}" class="btn-edit-pet">
-                        <i class="fas fa-edit"></i> Редактировать
-                    </a>
-                </div>
+                <!-- Краткая медицинская информация -->
+                ${(animal.vaccinations || animal.diseases) ? `
+                <div class="dashboard-medical-summary">
+                    <div class="medical-tags">
+                        ${animal.vaccinations ? '<span class="medical-tag"><i class="fas fa-syringe"></i> Прививки</span>' : ''}
+                        ${animal.diseases ? '<span class="medical-tag"><i class="fas fa-stethoscope"></i> Заболевания</span>' : ''}
+                        ${animal.vetInfo ? '<span class="medical-tag"><i class="fas fa-user-md"></i> Ветеринар</span>' : ''}
+                    </div>
+                </div>` : ''}
             </div>
             
-            <div class="animal-card-footer">
-                <span class="registration-date">
-                    <i class="fas fa-calendar-alt"></i> 
-                    ${animal.lastUpdated ? 
-                        `Обновлен: ${formatDate(animal.lastUpdated)}` : 
-                        `Зарегистрирован: ${formatDate(animal.registrationDate)}`
-                    }
-                </span>
+            <!-- Действия -->
+            <div class="dashboard-card-actions">
+                <a href="pet-profile.html?id=${animal.id}" class="dashboard-action-btn view-btn" title="Просмотреть профиль">
+                    <i class="fas fa-eye"></i> Просмотр
+                </a>
+                <a href="edit-pet.html?id=${animal.id}" class="dashboard-action-btn edit-btn" title="Редактировать">
+                    <i class="fas fa-edit"></i> Редактировать
+                </a>
+                <button class="dashboard-action-btn delete-btn" data-id="${animal.id}" title="Удалить" onclick="showDeleteConfirmation('${animal.id}', '${escapeHtml(animal.petName)}')">
+                    <i class="fas fa-trash"></i> Удалить
+                </button>
             </div>
         </div>
     `).join('');
+}
+
+// 🔧 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+
+function getAnimalIcon(species) {
+    const speciesLower = species ? species.toLowerCase() : '';
+    if (speciesLower.includes('собак') || speciesLower.includes('dog')) {
+        return '<i class="fas fa-dog"></i>';
+    } else if (speciesLower.includes('кошк') || speciesLower.includes('cat')) {
+        return '<i class="fas fa-cat"></i>';
+    } else if (speciesLower.includes('птиц') || speciesLower.includes('bird')) {
+        return '<i class="fas fa-dove"></i>';
+    } else if (speciesLower.includes('грызун') || speciesLower.includes('rodent')) {
+        return '<i class="fas fa-hippo"></i>';
+    } else if (speciesLower.includes('рептили') || speciesLower.includes('reptile')) {
+        return '<i class="fas fa-dragon"></i>';
+    } else {
+        return '<i class="fas fa-paw"></i>';
+    }
+}
+
+function getSpeciesIcon(species) {
+    const speciesLower = species ? species.toLowerCase() : '';
+    if (speciesLower.includes('собак') || speciesLower.includes('dog')) {
+        return 'fa-dog';
+    } else if (speciesLower.includes('кошк') || speciesLower.includes('cat')) {
+        return 'fa-cat';
+    } else if (speciesLower.includes('птиц') || speciesLower.includes('bird')) {
+        return 'fa-dove';
+    } else if (speciesLower.includes('грызун') || speciesLower.includes('rodent')) {
+        return 'fa-hippo';
+    } else if (speciesLower.includes('рептили') || speciesLower.includes('reptile')) {
+        return 'fa-dragon';
+    } else {
+        return 'fa-paw';
+    }
+}
+
+function calculateAge(birthDate) {
+    if (!birthDate) return 'Не указан';
     
-    // Добавляем обработчики для кнопок просмотра
-    document.querySelectorAll('.btn-view-pet').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const animalId = this.getAttribute('data-id');
-            window.location.href = `pet-profile.html?id=${animalId}`;
+    try {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        
+        // Проверка корректности даты
+        if (isNaN(birth.getTime())) {
+            return 'Неверная дата';
+        }
+        
+        let years = today.getFullYear() - birth.getFullYear();
+        let months = today.getMonth() - birth.getMonth();
+        
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+        
+        if (years === 0) {
+            return `${months} мес.`;
+        } else if (months === 0) {
+            return `${years} г.`;
+        } else {
+            return `${years} г. ${months} мес.`;
+        }
+    } catch (error) {
+        console.error('Ошибка расчета возраста:', error);
+        return 'Ошибка расчета';
+    }
+}
+
+function getVaccineStatus(vaccinations) {
+    if (!vaccinations) return 'Нет данных';
+    
+    // Простая проверка наличия прививок
+    const lines = vaccinations.split('\n').filter(line => line.trim().length > 0);
+    
+    if (lines.length === 0) {
+        return 'Нет данных';
+    }
+    
+    // Ищем даты в тексте прививок
+    const currentYear = new Date().getFullYear();
+    const hasCurrentYear = lines.some(line => line.includes(currentYear.toString()));
+    
+    if (hasCurrentYear) {
+        return 'Актуальны';
+    } else {
+        return 'Требуют обновления';
+    }
+}
+
+function showDeleteConfirmation(animalId, petName) {
+    if (confirm(`Вы уверены, что хотите удалить питомца "${petName}"? Это действие нельзя отменить.`)) {
+        deletePetFromDashboard(animalId);
+    }
+}
+
+async function deletePetFromDashboard(animalId) {
+    try {
+        const response = await api.deleteAnimal(animalId);
+        
+        if (response.success) {
+            showNotification(`Питомец успешно удален!`, 'success');
+            
+            // Перезагружаем список животных через 1 секунду
+            setTimeout(() => {
+                loadUserAnimals();
+            }, 1000);
+        } else {
+            throw new Error(response.error || 'Ошибка удаления');
+        }
+    } catch (error) {
+        console.error('❌ Delete error:', error);
+        showError(error.message || 'Произошла ошибка при удалении питомца');
+    }
+}
+
+function showError(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification error';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #F44336;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        max-width: 500px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+// 🔧 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (добавьте если их нет)
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'Не указана';
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
         });
-    });
+    } catch (error) {
+        console.error('Ошибка форматирования даты:', error);
+        return 'Неверная дата';
+    }
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#F44336'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 300px;
+        max-width: 500px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 3000);
+}
+// 🔍 ПРОСМОТР ПРОФИЛЯ ПИТОМЦА
+function viewPetProfile(animalId) {
+    window.location.href = `pet-profile.html?id=${animalId}`;
 }
 
 // 🎨 ОТОБРАЖЕНИЕ АКТИВНОСТЕЙ

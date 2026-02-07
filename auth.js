@@ -9,10 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('userRegistrationForm');
     const loginForm = document.getElementById('loginForm');
     
+    // ДОБАВЛЯЕМ ВЫЗОВ ФУНКЦИЙ ДЛЯ ПАРОЛЯ ЗДЕСЬ:
+    setupPasswordVisibility();
+    setupPasswordStrength();
+    
     if (registrationForm) {
         console.log('📝 Registration form found');
-        setupPasswordVisibility();
-        setupPasswordStrength();
         registrationForm.addEventListener('submit', handleUserRegistration);
     }
     
@@ -27,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Настраиваем кнопки выхода
     setupLogoutButtons();
 });
-
 // 🔧 ПРОВЕРКА ПОДКЛЮЧЕНИЯ К СЕРВЕРУ
 async function checkServerConnection() {
     try {
@@ -344,21 +345,18 @@ function updateUserGreeting(user) {
 
 // 🔧 ФУНКЦИИ ДЛЯ РАБОТЫ С ПАРОЛЯМИ (остаются без изменений)
 function setupPasswordVisibility() {
+    // Для формы регистрации
+    console.log('👁️ Настройка видимости пароля...');
+    
     const togglePassword = document.getElementById('togglePassword');
+    console.log('Кнопка показа пароля найдена:', !!togglePassword);
     const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
     
     if (togglePassword) {
         togglePassword.addEventListener('click', function() {
             const passwordInput = document.getElementById('password');
             const icon = this.querySelector('i');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                passwordInput.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
+            togglePasswordVisibility(passwordInput, icon);
         });
     }
     
@@ -366,20 +364,37 @@ function setupPasswordVisibility() {
         toggleConfirmPassword.addEventListener('click', function() {
             const confirmPasswordInput = document.getElementById('confirmPassword');
             const icon = this.querySelector('i');
-            
-            if (confirmPasswordInput.type === 'password') {
-                confirmPasswordInput.type = 'text';
-                icon.className = 'fas fa-eye-slash';
-            } else {
-                confirmPasswordInput.type = 'password';
-                icon.className = 'fas fa-eye';
-            }
+            togglePasswordVisibility(confirmPasswordInput, icon);
+        });
+    }
+    
+    // Для формы входа (если есть)
+    const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+    if (toggleLoginPassword) {
+        toggleLoginPassword.addEventListener('click', function() {
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const icon = this.querySelector('i');
+            togglePasswordVisibility(loginPasswordInput, icon);
         });
     }
 }
 
+function togglePasswordVisibility(inputElement, iconElement) {
+    if (inputElement.type === 'password') {
+        inputElement.type = 'text';
+        iconElement.className = 'fas fa-eye-slash';
+    } else {
+        inputElement.type = 'password';
+        iconElement.className = 'fas fa-eye';
+    }
+}
+
 function setupPasswordStrength() {
+    console.log('💪 Настройка проверки силы пароля...');
+    
     const passwordInput = document.getElementById('password');
+    console.log('Поле пароля найдено:', !!passwordInput);
+    
     if (!passwordInput) return;
     
     passwordInput.addEventListener('input', function() {
@@ -389,38 +404,72 @@ function setupPasswordStrength() {
         
         if (!strengthBar || !strengthText) return;
         
-        let strength = 0;
-        let color = '';
-        let text = '';
+        // Проверяем надежность пароля
+        const strength = checkPasswordStrength(password);
         
-        if (password.length > 0) strength += 20;
-        if (password.length >= 8) strength += 20;
-        if (/[A-Z]/.test(password)) strength += 20;
-        if (/[0-9]/.test(password)) strength += 20;
-        if (/[^A-Za-z0-9]/.test(password)) strength += 20;
-        
-        strength = Math.min(strength, 100);
-        
-        if (strength < 40) {
-            color = '#F44336';
-            text = 'Слабый';
-        } else if (strength < 70) {
-            color = '#FF9800';
-            text = 'Средний';
-        } else if (strength < 90) {
-            color = '#2196F3';
-            text = 'Хороший';
-        } else {
-            color = '#4CAF50';
-            text = 'Отличный';
-        }
-        
-        strengthBar.style.setProperty('--strength-color', color);
-        strengthBar.querySelector('::after').style.width = strength + '%';
-        strengthBar.querySelector('::after').style.backgroundColor = color;
-        strengthText.textContent = text + ' пароль';
-        strengthText.style.color = color;
+        // Обновляем индикатор
+        updatePasswordStrengthIndicator(strengthBar, strengthText, strength);
     });
+}
+
+function checkPasswordStrength(password) {
+    let score = 0;
+    
+    // Длина пароля
+    if (password.length >= 8) score += 25;
+    else if (password.length >= 6) score += 15;
+    else if (password.length > 0) score += 5;
+    
+    // Буквы в разных регистрах
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 25;
+    else if (/[a-zA-Z]/.test(password)) score += 15;
+    
+    // Цифры
+    if (/[0-9]/.test(password)) score += 20;
+    
+    // Специальные символы
+    if (/[^A-Za-z0-9]/.test(password)) score += 30;
+    
+    return Math.min(Math.max(score, 0), 100); // Ограничиваем 0-100
+}
+
+function updatePasswordStrengthIndicator(strengthBar, strengthText, strength) {
+    let color = '';
+    let text = '';
+    
+    if (strength < 30) {
+        color = '#F44336';
+        text = 'Слабый';
+    } else if (strength < 60) {
+        color = '#FF9800';
+        text = 'Средний';
+    } else if (strength < 80) {
+        color = '#2196F3';
+        text = 'Хороший';
+    } else {
+        color = '#4CAF50';
+        text = 'Отличный';
+    }
+    
+    // Находим или создаем внутренний элемент
+    let barInner = strengthBar.querySelector('.strength-bar-inner');
+    if (!barInner) {
+        barInner = document.createElement('div');
+        barInner.className = 'strength-bar-inner';
+        strengthBar.appendChild(barInner);
+    }
+    
+    // Устанавливаем стили напрямую
+    barInner.style.cssText = `
+        width: ${strength}%;
+        height: 100%;
+        background-color: ${color};
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    `;
+    
+    strengthText.textContent = text + ' пароль';
+    strengthText.style.color = color;
 }
 
 // 🔧 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ

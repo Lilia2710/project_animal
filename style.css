@@ -2387,67 +2387,7 @@ input[readonly]:focus {
         width: 100%;
     }
 }
-<!-- Навигация -->
-<nav class="navbar">
-    <div class="container">
-        <a href="index.html" class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-paw"></i>
-            </div>
-            <span class="logo-text">ЧипТрекер</span>
-        </a>
-        <div class="nav-links">
-            <a href="index.html" class="active"><i class="fas fa-home"></i> Главная</a>
-            <a href="login.html"><i class="fas fa-sign-in-alt"></i> Вход</a>
-            <a href="register.html"><i class="fas fa-user-plus"></i> Регистрация</a>
-        </div>
-    </div>
-</nav>
 
-<!-- Герой секция с животными -->
-<section class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1><span class="highlight">Учет домашних животных</span> по микрочипам</h1>
-            <p class="subtitle">Надежная система регистрации и отслеживания ваших питомцев</p>
-            <p class="description">ЧипТрекер помогает заботиться о ваших питомцах, храня всю важную информацию в одном месте. Регистрируйте, отслеживайте и управляйте данными о здоровье ваших животных.</p>
-            
-            <div class="hero-animals">
-                <div class="hero-animal">🐕</div>
-                <div class="hero-animal">🐈</div>
-                <div class="hero-animal">🐇</div>
-                <div class="hero-animal">🐦</div>
-            </div>
-            
-            <div class="hero-buttons">
-                <a href="register.html" class="btn btn-primary btn-large btn-animal btn-paw">
-                    Начать регистрацию
-                </a>
-                <a href="login.html" class="btn btn-secondary btn-large">
-                    <i class="fas fa-sign-in-alt"></i> Войти в систему
-                </a>
-            </div>
-            
-            <div class="paw-progress">
-                <div class="paw-step active">1</div>
-                <div class="paw-step">2</div>
-                <div class="paw-step">3</div>
-                <div class="paw-step">4</div>
-            </div>
-        </div>
-        <div class="hero-image">
-            <img src="https://cdn-icons-png.flaticon.com/512/1998/1998678.png" alt="Домашние животные">
-        </div>
-    </div>
-</section>
-
-<!-- Декор в виде следов -->
-<div class="animal-decorations">
-    <div class="paw-print">🐾</div>
-    <div class="paw-print">🐾</div>
-    <div class="paw-print">🐾</div>
-    <div class="paw-print">🐾</div>
-</div>
 /* ===== СТИЛИ ДЛЯ УСЛОВИЙ ИСПОЛЬЗОВАНИЯ ===== */
 .terms-header, .privacy-header {
     text-align: center;
@@ -6714,4 +6654,66 @@ input[readonly]:focus {
         opacity: 0;
         transform: translateX(100%);
     }
+}
+/* Стили для индикатора силы пароля */
+.strength-bar {
+    height: 6px;
+    background: var(--muted-purple);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.strength-bar-inner {
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.password-input {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    color: var(--lavender);
+}
+
+/* Цвета для индикатора силы пароля */
+.password-strength .strength-bar-inner[style*="rgb(244, 67, 54)"] {
+    background: #F44336 !important;
+}
+
+.password-strength .strength-bar-inner[style*="rgb(255, 152, 0)"] {
+    background: #FF9800 !important;
+}
+
+.password-strength .strength-bar-inner[style*="rgb(33, 150, 243)"] {
+    background: #2196F3 !important;
+}
+
+.password-strength .strength-bar-inner[style*="rgb(76, 175, 80)"] {
+    background: #4CAF50 !important;
 }

@@ -2,7 +2,7 @@
 class ApiClient {
     constructor() {
         // Базовый URL API (наш бэкенд)
-        this.baseUrl = 'http://localhost:3000/api';
+        this.baseUrl = 'http://localhost:4000/api';
         
         // Настройки по умолчанию для запросов
         this.defaultOptions = {
@@ -111,12 +111,14 @@ class ApiClient {
         return this.request(`/animals/${id}`);
     }
 
-    async updateAnimal(id, animalData) {
-        return this.request(`/animals/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(animalData)
-        });
-    }
+    // В api.js метод updateAnimal должен быть таким:
+async updateAnimal(id, animalData) {
+    const response = await this.request(`/animals/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(animalData)
+    });
+    return response; // response уже содержит {success, message, animal}
+}
 
     async deleteAnimal(id) {
         return this.request(`/animals/${id}`, {
@@ -176,3 +178,10 @@ if (typeof window !== 'undefined') {
 }
 
 export { api };
+// Утилитная функция для API
+function formatMedicalText(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+}

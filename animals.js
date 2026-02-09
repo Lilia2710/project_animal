@@ -77,14 +77,20 @@ async function handleAnimalRegistration(e) {
             additionalInfo: document.getElementById('additionalInfo')?.value.trim() || ''
         };
         
-        // ВАЛИДАЦИЯ
+        // Валидация
         const errors = [];
         if (!formData.chipNumber) errors.push('Введите номер чипа');
         if (!formData.petName) errors.push('Введите кличку животного');
         if (!formData.species) errors.push('Выберите вид животного');
-        
+
+        // Добавляем проверку на 15 символов
+        if (formData.chipNumber && formData.chipNumber.length !== 15) {
+            errors.push('Номер чипа должен содержать ровно 15 символов');
+        }
+
         if (errors.length > 0) {
             throw new Error(errors.join('<br>'));
+            return;
         }
         
         console.log('📨 Sending animal registration request...');
@@ -236,28 +242,19 @@ async function loadDashboardData() {
 // 🔍 ЗАГРУЗКА ДАННЫХ ПИТОМЦА ДЛЯ РЕДАКТИРОВАНИЯ
 async function loadAnimalForEdit(animalId) {
     try {
-        console.log(`🔄 Loading animal data for edit: ${animalId}`);
-        
         const response = await api.getAnimal(animalId);
         
-        if (response.success && response.animal) {
+        // Исправленная проверка:
+        if (response && response.success && response.animal) {
             const animal = response.animal;
-            
-            // Заполняем форму данными
             populateEditForm(animal);
-            
-            // Настраиваем кнопку удаления
             setupDeleteButton(animalId, animal.petName);
-            
         } else {
-            throw new Error(response.error || 'Питомец не найден');
+            throw new Error(response?.error || 'Питомец не найден');
         }
         
     } catch (error) {
-        console.error('❌ Animal loading error:', error);
         showError(error.message || 'Не удалось загрузить данные питомца');
-        
-        // Перенаправляем на dashboard через 3 секунды
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 3000);
@@ -585,9 +582,7 @@ function setupAnimalModals() {
 function showSuccessModal(message, petName = null, redirect = false) {
     const modal = document.getElementById('successModal');
     if (!modal) {
-        // Создаем временное уведомление
         showNotification(message, 'success');
-        
         if (redirect) {
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
@@ -599,7 +594,6 @@ function showSuccessModal(message, petName = null, redirect = false) {
     document.getElementById('modalMessage').textContent = message;
     modal.style.display = 'flex';
     
-    // Настраиваем кнопку OK
     const okBtn = document.getElementById('successOkBtn');
     if (okBtn) {
         const newOkBtn = okBtn.cloneNode(true);
@@ -609,11 +603,13 @@ function showSuccessModal(message, petName = null, redirect = false) {
             modal.style.display = 'none';
             if (redirect) {
                 window.location.href = 'dashboard.html';
+            } else {
+                // Возвращаемся к списку животных после успешного редактирования
+                window.location.href = 'dashboard.html';
             }
         });
     }
     
-    // Автоматическое перенаправление
     if (redirect) {
         setTimeout(() => {
             modal.style.display = 'none';

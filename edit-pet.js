@@ -27,28 +27,26 @@ async function loadAnimalData(animalId) {
             return;
         }
         
-        // В реальном приложении здесь будет запрос к серверу
-        const animals = JSON.parse(localStorage.getItem('animalTrackerAnimals')) || [];
-        const animal = animals.find(a => a.id === animalId && a.ownerId === user.id);
+        // Проблема здесь - неправильная проверка ответа от API
+        const response = await api.getAnimal(animalId);
         
-        if (!animal) {
-            showError('Питомец не найден или у вас нет доступа');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
-            return;
+        // Исправляем проверку:
+        if (response && response.success && response.animal) {
+            const animal = response.animal;
+            
+            // Убираем лишнюю проверку ownerId - API уже проверяет
+            populateForm(animal);
+            document.getElementById('pageDescription').textContent = 
+                `Редактирование информации о ${animal.petName}`;
+        } else {
+            throw new Error(response?.error || 'Питомец не найден');
         }
         
-        // Заполняем форму данными
-        populateForm(animal);
-        
-        // Обновляем описание страницы
-        document.getElementById('pageDescription').textContent = 
-            `Редактирование информации о ${animal.petName}`;
-        
     } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-        showError('Произошла ошибка при загрузке данных питомца');
+        showError(error.message || 'Не удалось загрузить данные питомца');
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 2000);
     }
 }
 
@@ -88,70 +86,41 @@ function setupFormHandlers(animalId) {
 
 async function updateAnimal(animalId) {
     try {
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        if (!user) {
-            showError('Пожалуйста, войдите в систему');
-            return;
-        }
-        
-        // Собираем данные из формы
         const formData = {
-            id: animalId,
-            chipNumber: document.getElementById('editChipNumber').value.trim(),
             petName: document.getElementById('editPetName').value.trim(),
             species: document.getElementById('editSpecies').value,
-            breed: document.getElementById('editBreed').value.trim() || '',
+            breed: document.getElementById('editBreed')?.value.trim() || '',
             birthDate: document.getElementById('editBirthDate').value || '',
-            color: document.getElementById('editColor').value.trim() || '',
+            color: document.getElementById('editColor')?.value.trim() || '',
             gender: document.getElementById('editGender').value || '',
             vaccinations: document.getElementById('editVaccinations').value.trim() || '',
             diseases: document.getElementById('editDiseases').value.trim() || '',
             vetInfo: document.getElementById('editVetInfo').value.trim() || '',
             diet: document.getElementById('editDiet').value.trim() || '',
             behavior: document.getElementById('editBehavior').value.trim() || '',
-            additionalInfo: document.getElementById('editAdditionalInfo').value.trim() || '',
-            lastUpdated: new Date().toISOString()
+            additionalInfo: document.getElementById('editAdditionalInfo').value.trim() || ''
         };
         
-        // Валидация
         const errors = [];
         if (!formData.petName) errors.push('Введите кличку животного');
         if (!formData.species) errors.push('Выберите вид животного');
         
         if (errors.length > 0) {
-            showError(errors.join('<br>'));
-            return;
+            throw new Error(errors.join('<br>'));
         }
         
-        // В реальном приложении здесь будет запрос к серверу
-        const animals = JSON.parse(localStorage.getItem('animalTrackerAnimals')) || [];
-        const animalIndex = animals.findIndex(a => a.id === animalId && a.ownerId === user.id);
+        // Получаем ответ от API
+        const response = await api.updateAnimal(animalId, formData);
         
-        if (animalIndex === -1) {
-            showError('Питомец не найден');
-            return;
+        // Исправляем обработку ответа
+        if (response && response.success) {
+            showSuccessModal('Информация о питомце успешно обновлена!', response.animal?.petName);
+        } else {
+            throw new Error(response?.error || 'Ошибка обновления питомца');
         }
-        
-        // Сохраняем неизменяемые поля
-        const originalAnimal = animals[animalIndex];
-        formData.ownerId = originalAnimal.ownerId;
-        formData.ownerName = originalAnimal.ownerName;
-        formData.ownerPhone = originalAnimal.ownerPhone;
-        formData.registrationDate = originalAnimal.registrationDate;
-        
-        // Обновляем данные
-        animals[animalIndex] = { ...originalAnimal, ...formData };
-        localStorage.setItem('animalTrackerAnimals', JSON.stringify(animals));
-        
-        // Добавляем активность
-        addActivity(`Обновлена информация о питомце: ${formData.petName}`);
-        
-        // Показываем успешное сообщение
-        showSuccessModal('Информация о питомце успешно обновлена!', formData.petName);
         
     } catch (error) {
-        console.error('Ошибка обновления:', error);
-        showError('Произошла ошибка при обновлении информации');
+        showError(error.message || 'Произошла ошибка при обновлении информации');
     }
 }
 

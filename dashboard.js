@@ -671,6 +671,11 @@ function showSearchResult(animal) {
                             <span class="info-label">Порода:</span>
                             <span class="info-value">${escapeHtml(animal.breed)}</span>
                         </div>` : ''}
+                        ${animal.color ? `
+                        <div class="info-row">
+                            <span class="info-label">Окрас:</span>
+                            <span class="info-value">${escapeHtml(animal.color)}</span>
+                        </div>` : ''}
                         <div class="info-row">
                             <span class="info-label">Владелец:</span>
                             <span class="info-value">${escapeHtml(animal.ownerName)}</span>
@@ -680,6 +685,18 @@ function showSearchResult(animal) {
                             <span class="info-value">${escapeHtml(animal.ownerPhone)}</span>
                         </div>
                     </div>
+                    
+                    ${animal.vaccinations ? `
+                    <div class="medical-section">
+                        <h5><i class="fas fa-syringe"></i> Прививки</h5>
+                        <div class="medical-content">${formatMedicalText(animal.vaccinations)}</div>
+                    </div>` : ''}
+                    
+                    ${animal.diseases ? `
+                    <div class="medical-section">
+                        <h5><i class="fas fa-stethoscope"></i> Заболевания и аллергии</h5>
+                        <div class="medical-content">${formatMedicalText(animal.diseases)}</div>
+                    </div>` : ''}
                 </div>
                 <div class="modal-actions">
                     <button class="btn btn-primary" id="closeSearchResult">
@@ -690,12 +707,10 @@ function showSearchResult(animal) {
         </div>
     `;
     
-    // Добавляем результат на страницу
     const resultModal = document.createElement('div');
     resultModal.innerHTML = resultHTML;
     document.body.appendChild(resultModal);
     
-    // Добавляем стили
     const style = document.createElement('style');
     style.textContent = `
         .search-result-modal {
@@ -738,22 +753,50 @@ function showSearchResult(animal) {
         .result-info .info-row:last-child {
             border-bottom: none;
         }
+        .medical-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(157, 78, 221, 0.1);
+        }
+        .medical-section h5 {
+            color: var(--lavender);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .medical-content {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid var(--lavender);
+            white-space: pre-line;
+        }
     `;
     document.head.appendChild(style);
     
-    // Кнопка закрытия
     document.getElementById('closeSearchResult').addEventListener('click', function() {
         resultModal.remove();
         style.remove();
     });
     
-    // Закрытие по клику вне модального окна
     resultModal.addEventListener('click', function(e) {
         if (e.target.classList.contains('search-result-modal')) {
             resultModal.remove();
             style.remove();
         }
     });
+}
+
+// Вспомогательная функция для форматирования медицинского текста
+function formatMedicalText(text) {
+    if (!text) return '';
+    // Сохраняем переносы строк и форматирование
+    return escapeHtml(text).replace(/\n/g, '<br>');
 }
 
 // 🖨️ ПЕЧАТЬ КАРТОЧЕК ЖИВОТНЫХ

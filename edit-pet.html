@@ -55,16 +55,18 @@
                         
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="editChipNumber">
-                                    <i class="fas fa-microchip"></i>
-                                    Номер чипа *
-                                </label>
-                                <input type="text" id="editChipNumber" name="chipNumber" required 
-                                       placeholder="Введите 15-значный номер чипа"
-                                       pattern="[A-Z0-9]{10,20}"
-                                       readonly>
-                                <div class="form-hint">Номер чипа нельзя изменить после регистрации</div>
-                            </div>
+    <label for="editChipNumber">
+        <i class="fas fa-microchip"></i>
+        Номер чипа *
+    </label>
+    <input type="text" id="editChipNumber" name="chipNumber" required 
+           placeholder="Введите 15-значный номер чипа"
+           pattern="[A-Za-z0-9]{15}"
+           maxlength="15"
+           title="Номер чипа должен содержать ровно 15 символов"
+           readonly>
+    <div class="form-hint">Номер чипа нельзя изменить после регистрации</div>
+</div>
                         </div>
 
                         <div class="form-row">

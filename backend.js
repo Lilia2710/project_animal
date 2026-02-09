@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs').promises;
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 // ✅ ВОТ И ВСЯ БАЗА ДАННЫХ! Просто файлы JSON!
 const dataFiles = {
@@ -254,11 +254,18 @@ app.post('/api/animals', authenticateToken, async (req, res) => {
     const animalData = req.body;
     
     // Простая валидация
-    if (!animalData.chipNumber || !animalData.petName || !animalData.species) {
-      return res.status(400).json({ 
+if (!animalData.chipNumber || !animalData.petName || !animalData.species) {
+    return res.status(400).json({ 
         error: 'Заполните обязательные поля: номер чипа, кличка, вид' 
-      });
-    }
+    });
+}
+
+// Добавляем проверку на 15 символов
+if (animalData.chipNumber.length !== 15) {
+    return res.status(400).json({ 
+        error: 'Номер чипа должен содержать ровно 15 символов' 
+    });
+}
     
     // Получаем данные пользователя
     const users = await readData('users');
@@ -478,41 +485,43 @@ app.get('/api/activities', authenticateToken, async (req, res) => {
 
 // 11. Поиск животного по номеру чипа (публичный доступ)
 app.get('/api/search/:chipNumber', async (req, res) => {
-  try {
-    const chipNumber = req.params.chipNumber;
-    console.log(`🔎 Поиск животного по чипу: ${chipNumber}`);
-    
-    if (!chipNumber) {
-      return res.status(400).json({ error: 'Укажите номер чипа' });
+    try {
+        const chipNumber = req.params.chipNumber;
+        console.log(`🔎 Поиск животного по чипу: ${chipNumber}`);
+        
+        if (!chipNumber) {
+            return res.status(400).json({ error: 'Укажите номер чипа' });
+        }
+        
+        const animals = await readData('animals');
+        const animal = animals.find(a => a.chipNumber === chipNumber);
+        
+        if (!animal) {
+            return res.status(404).json({ error: 'Животное не найдено' });
+        }
+        
+        // Возвращаем публичную информацию + прививки и заболевания
+        const publicInfo = {
+            petName: animal.petName,
+            species: animal.species,
+            breed: animal.breed || '',
+            color: animal.color || '',
+            ownerName: animal.ownerName,
+            ownerPhone: animal.ownerPhone,
+            chipNumber: animal.chipNumber,
+            vaccinations: animal.vaccinations || '',
+            diseases: animal.diseases || ''
+        };
+        
+        res.json({
+            success: true,
+            animal: publicInfo
+        });
+        
+    } catch (error) {
+        console.error('❌ Ошибка поиска:', error);
+        res.status(500).json({ error: 'Ошибка сервера' });
     }
-    
-    const animals = await readData('animals');
-    const animal = animals.find(a => a.chipNumber === chipNumber);
-    
-    if (!animal) {
-      return res.status(404).json({ error: 'Животное не найдено' });
-    }
-    
-    // Возвращаем только публичную информацию
-    const publicInfo = {
-      petName: animal.petName,
-      species: animal.species,
-      breed: animal.breed,
-      color: animal.color,
-      ownerName: animal.ownerName,
-      ownerPhone: animal.ownerPhone,
-      chipNumber: animal.chipNumber
-    };
-    
-    res.json({
-      success: true,
-      animal: publicInfo
-    });
-    
-  } catch (error) {
-    console.error('❌ Ошибка поиска:', error);
-    res.status(500).json({ error: 'Ошибка сервера' });
-  }
 });
 
 // 12. Главная страница (отдаем index.html)

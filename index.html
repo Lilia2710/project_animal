@@ -125,6 +125,31 @@
         </div>
     </div>
 </div>
+<!-- Поиск по чипу -->
+<div class="chip-search-container">
+    <div class="search-header">
+        <h3><i class="fas fa-search"></i> Поиск животного по номеру чипа</h3>
+        <p>Введите номер микрочипа для получения информации о животном</p>
+    </div>
+    
+    <div class="search-form">
+        <div class="search-input-group">
+            <input type="text" 
+                   id="mainChipSearch" 
+                   placeholder="Введите 15-значный номер чипа (например: CHIP-1234567890)"
+                   maxlength="20">
+            <button class="btn btn-primary" id="mainSearchBtn">
+                <i class="fas fa-search"></i> Найти
+            </button>
+        </div>
+        <div class="search-hint">
+            <i class="fas fa-info-circle"></i>
+            <span>Поиск доступен без регистрации. Данные предоставляются с согласия владельца.</span>
+        </div>
+    </div>
+    
+    <div id="mainSearchResults" class="search-results"></div>
+</div>
     </section>
 <!-- Секция "Особенности" -->
 <section id="features" class="features-detailed">
@@ -464,5 +489,7 @@
     </footer>
 
     <script src="navigation.js"></script>
+    <!-- Подключаем скрипт поиска -->
+    <script src="main-search.js"></script>
 </body>
 </html>

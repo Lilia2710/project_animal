@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs').promises;
 
 const app = express();
-const PORT = 4000;
+const PORT = 6000;
 
 // ✅ ВОТ И ВСЯ БАЗА ДАННЫХ! Просто файлы JSON!
 const dataFiles = {

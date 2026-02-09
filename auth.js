@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupLogoutButtons();
 });
 // 🔧 ПРОВЕРКА ПОДКЛЮЧЕНИЯ К СЕРВЕРУ
-async function checkServerConnection() {
+/*async function checkServerConnection() {
     try {
         // Пробуем сделать простой запрос
         await fetch('http://localhost:3000');
@@ -39,7 +39,7 @@ async function checkServerConnection() {
         console.warn('⚠️ Server is not running or not accessible');
         showServerWarning();
     }
-}
+}*/
 
 // ⚠️ ПРЕДУПРЕЖДЕНИЕ ОТСУТСТВИЯ СЕРВЕРА
 function showServerWarning() {
